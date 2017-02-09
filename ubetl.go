@@ -116,7 +116,7 @@ func main() {
 	fmt.Print("Start time: ")
 	fmt.Println(start_time)
 	fmt.Println(billperiod)
-	errorF := CreateGZ(OUTPATH+"logs/log"+billperiod+"_"+billcycle+"errors.txt")
+	errorF := CreateGZ(OUTPATH+"logs/log"+billperiod+"_"+billcycle+"errors.txt.gz")
 	_ = os.Mkdir(OUTPATH+"/"+billperiod, 0777)
 	//  dir := os.Args[1]
 	file, err := os.OpenFile(OUTPATH+"logs/log"+billperiod+"_"+billcycle+"log.txt", os.O_CREATE|os.O_WRONLY|os.O_APPEND|os.O_TRUNC, 0666)
