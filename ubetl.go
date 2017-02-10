@@ -48,7 +48,12 @@ type FileInfo struct {
 
 var fileMap = make(map[string]FileInfo)
 var subcycles []string
+
+// Enterable as parameters - other than that treated like constants.
 var billperiod string
+var billcycle string
+var UBPATH string
+var OUTPATH string
 
 func main() {
 
@@ -58,13 +63,10 @@ func main() {
 // not enterable - but still needed
   subcycle := ""
 
-	var billperiod string
+
 	flag.StringVar(&billperiod, "bp", "", "Tyyyymmdd")
-	var billcycle string
 	flag.StringVar(&billcycle, "cycle", "", "Cxx")
-	var UBPATH string
 	flag.StringVar(&UBPATH, "inpath","/media/sf_work/","Input Path")
-	var OUTPATH string
 	flag.StringVar(&OUTPATH, "outpath","/media/sf_work/ubout/","Output Path")
   flag.Parse()
 	fmt.Println("bp:", billperiod)
@@ -385,7 +387,7 @@ func main() {
 				idx := strings.Index(refFiles, key)
 				if idx == -1 { //skip files in the reference file list.
 					log.Println("Details:" + key + ":")
-					err = detailFile(getFile(val), subcycles[m], OUTPATH, key, accountTotalMap, aggrxref_map, saxref_map, prodfam_map, prodtype_map, chrggrp_map, transcode_map, address_map, aggrdesc_map, svcprovd_map, provider_map, permission_map, commit_map,errorF)
+					err = detailFile(getFile(val), subcycles[m], key, accountTotalMap, aggrxref_map, saxref_map, prodfam_map, prodtype_map, chrggrp_map, transcode_map, address_map, aggrdesc_map, svcprovd_map, provider_map, permission_map, commit_map,errorF)
 					check(err)
 				}
 
@@ -402,7 +404,7 @@ func main() {
 //****************************************************************************
 // detailFile - Process each detail file
 //****************************************************************************
-func detailFile(detFileIn <-chan string, subcycle, filebase, OUTPATH string, accountTotalMap, aggrxref_map, saxref_map, prodfam_map, prodtype_map, chrggrp_map, transcode_map, address_map, aggrdesc_map, svcprovd_map, provider_map, permission_map, commit_map map[string]string, errorF F) error {
+func detailFile(detFileIn <-chan string, subcycle, filebase string, accountTotalMap, aggrxref_map, saxref_map, prodfam_map, prodtype_map, chrggrp_map, transcode_map, address_map, aggrdesc_map, svcprovd_map, provider_map, permission_map, commit_map map[string]string, errorF F) error {
 	line := ""
 	done_ub := false
 	count := 0
