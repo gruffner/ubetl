@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"bufio"
 	"compress/gzip"
 	"fmt"
@@ -16,8 +17,7 @@ import (
 )
 
 const MAXDET = 5000000000000
-const UBPATH = "/media/sf_work/"
-const OUTPATH = "/media/sf_work/ubout/"
+
 
 type F struct {
 	f  *os.File
@@ -55,8 +55,28 @@ func main() {
 	//	var test_map = make(map[string]string)
 	//  _ = refMap(getFile("/media/ubuntu3/SeagateBackupPlus/work/ubbase/MAF_TRANCODE/20170105/06/32520000/SUB_FTRANCODE_ID1_T20150607_C00_SC00_00.DAT.gz"), test_map)
 
-	billcycle := ""
-	subcycle := ""
+// not enterable - but still needed
+  subcycle := ""
+
+	var billperiod string
+	flag.StringVar(&billperiod, "bp", "", "Tyyyymmdd")
+	var billcycle string
+	flag.StringVar(&billcycle, "cycle", "", "Cxx")
+	var UBPATH string
+	flag.StringVar(&UBPATH, "inpath","/media/sf_work/","Input Path")
+	var OUTPATH string
+	flag.StringVar(&OUTPATH, "outpath","/media/sf_work/ubout/","Output Path")
+  flag.Parse()
+	fmt.Println("bp:", billperiod)
+		fmt.Println("cycle:", billcycle)
+			fmt.Println("inpath:", UBPATH)
+				fmt.Println("outpath:", OUTPATH)
+
+	if billperiod == "" {
+		log.Println("-bp Tyyyymmdd is required")
+		os.Exit(1)
+	}
+
 
 	//	  billperiod = "T20161119"        //VERIFIED
 	//		billperiod = "T20161120"    //VERIFIED
@@ -110,7 +130,7 @@ func main() {
 	//		billperiod = "T20170126"     //VERIFIED
 	//		billperiod = "T20170128"    //VERIFIED
 //	billperiod = "T20170129" //VERIFIED
-	    billperiod = "T20170201"     //VERIFIED
+//	    billperiod = "T20170201"     //VERIFIED
 
 	var start_time = time.Now().Format("2006-01-02 15:04:05")
 	fmt.Print("Start time: ")
@@ -365,7 +385,7 @@ func main() {
 				idx := strings.Index(refFiles, key)
 				if idx == -1 { //skip files in the reference file list.
 					log.Println("Details:" + key + ":")
-					err = detailFile(getFile(val), subcycles[m], key, accountTotalMap, aggrxref_map, saxref_map, prodfam_map, prodtype_map, chrggrp_map, transcode_map, address_map, aggrdesc_map, svcprovd_map, provider_map, permission_map, commit_map,errorF)
+					err = detailFile(getFile(val), subcycles[m], OUTPATH, key, accountTotalMap, aggrxref_map, saxref_map, prodfam_map, prodtype_map, chrggrp_map, transcode_map, address_map, aggrdesc_map, svcprovd_map, provider_map, permission_map, commit_map,errorF)
 					check(err)
 				}
 
@@ -382,7 +402,7 @@ func main() {
 //****************************************************************************
 // detailFile - Process each detail file
 //****************************************************************************
-func detailFile(detFileIn <-chan string, subcycle, filebase string, accountTotalMap, aggrxref_map, saxref_map, prodfam_map, prodtype_map, chrggrp_map, transcode_map, address_map, aggrdesc_map, svcprovd_map, provider_map, permission_map, commit_map map[string]string, errorF F) error {
+func detailFile(detFileIn <-chan string, subcycle, filebase, OUTPATH string, accountTotalMap, aggrxref_map, saxref_map, prodfam_map, prodtype_map, chrggrp_map, transcode_map, address_map, aggrdesc_map, svcprovd_map, provider_map, permission_map, commit_map map[string]string, errorF F) error {
 	line := ""
 	done_ub := false
 	count := 0
